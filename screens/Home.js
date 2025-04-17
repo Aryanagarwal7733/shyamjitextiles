@@ -32,6 +32,7 @@ const Home = ({ navigation }) => {
           <Text style={styles.buttonText}>{category.name}</Text>
         </TouchableOpacity>
       ))}
+
     </ImageBackground>
   );
 };
@@ -63,6 +64,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B0000',
     padding: 10,
     margin: 10,
+    borderRadius: 8,
+    width: 200,
+    alignItems: 'center',
+  },
+  wishlistButton: {
+    backgroundColor: '#FFD700', // Golden color for the wishlist button
+    padding: 10,
+    marginTop: 20,
     borderRadius: 8,
     width: 200,
     alignItems: 'center',

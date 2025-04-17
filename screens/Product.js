@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Modal, ScrollView } from 'react-native';
+
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Modal, ScrollView, ImageBackground } from 'react-native';
 
 const productList = [
   { name: 'bags', images: [require('../assets/products/bags-1.jpg'), require('../assets/products/bags-2.jpg'), require('../assets/products/bags-3.jpg'), require('../assets/products/bags-4.jpg'), require('../assets/products/bags-5.jpg'), require('../assets/products/bags-6.jpg'), require('../assets/products/bags-7.jpg'), require('../assets/products/bags-8.jpg')] },

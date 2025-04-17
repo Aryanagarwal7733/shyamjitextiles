@@ -1,161 +1,112 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { Button } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 
-const productOptions = [
-  { id: '1', name: 'Kurti 1' },
-  { id: '2', name: 'Saree 1' },
-  { id: '3', name: 'Bedsheet 1' },
-  { id: '4', name: 'Baby Quilt' },
-  { id: '5', name: 'TNT Sofa Throw' },
-];
+const Wishlist = () => {
+  // Sample wishlist data (You can update it to be fetched from a backend or local storage)
+  const [wishlist, setWishlist] = useState([
+    { id: 'bags', name: 'Bags' },
+    { id: 'bedsheet-with-quilted-pillow-cover', name: 'Bedsheets with Quilted Pillow Cover' },
+    { id: 'baby-quilt', name: 'Baby Quilts' },
+    { id: 'kids-dohar', name: 'Kids Dohars' },
+    { id: 'sofa-throws', name: 'Sofa Throws' },
+  ]);
 
-const Cart = () => {
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [message, setMessage] = useState('');
-
-  const toggleSelection = (itemId) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(itemId)
-        ? prevSelected.filter((id) => id !== itemId)
-        : [...prevSelected, itemId]
-    );
-  };
-
-  const handleSubmit = () => {
-    if (!name || !phone || selectedItems.length === 0) {
-      Alert.alert('Incomplete', 'Please fill in all required fields and select at least one product.');
-      return;
-    }
-
-    const selectedNames = productOptions
-      .filter((item) => selectedItems.includes(item.id))
-      .map((item) => item.name)
-      .join(', ');
-
+  // Remove item from wishlist
+  const removeFromWishlist = (id) => {
     Alert.alert(
-      'Enquiry Submitted',
-      `Name: ${name}\nPhone: ${phone}\nProducts: ${selectedNames}\nMessage: ${message || 'N/A'}`
+      'Remove Item',
+      'Are you sure you want to remove this item from your wishlist?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            setWishlist(wishlist.filter(item => item.id !== id));
+          },
+        },
+      ]
     );
-
-    // Reset
-    setName('');
-    setPhone('');
-    setMessage('');
-    setSelectedItems([]);
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
-    >
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>📝 Product Enquiry</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Your Wishlist</Text>
 
+      {/* If wishlist is empty */}
+      {wishlist.length === 0 ? (
+        <Text style={styles.emptyText}>Your wishlist is empty</Text>
+      ) : (
         <FlatList
-          data={productOptions}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            const isSelected = selectedItems.includes(item.id);
-            return (
+          data={wishlist}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.itemText}>{item.name}</Text>
               <TouchableOpacity
-                style={[styles.productItem, isSelected && styles.selectedItem]}
-                onPress={() => toggleSelection(item.id)}
+                style={styles.removeButton}
+                onPress={() => removeFromWishlist(item.id)}
               >
-                <Text style={styles.itemText}>{item.name}</Text>
-                <Text>{isSelected ? '✅' : '➕'}</Text>
+                <Text style={styles.removeButtonText}>Remove</Text>
               </TouchableOpacity>
-            );
-          }}
-          scrollEnabled={false}
+            </View>
+          )}
         />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Your Name *"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number *"
-          value={phone}
-          keyboardType="phone-pad"
-          onChangeText={setPhone}
-        />
-        <TextInput
-          style={[styles.input, styles.messageInput]}
-          placeholder="Message (optional)"
-          value={message}
-          multiline
-          numberOfLines={4}
-          onChangeText={setMessage}
-        />
-
-        <View style={{ marginTop: 10, marginBottom: 20 }}>
-          <Button title="Submit Enquiry" onPress={handleSubmit} color="#8B0000" />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
-    paddingBottom: 40,
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 22,
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 20,
     color: '#8B0000',
-    marginBottom: 15,
-    textAlign: 'center',
   },
-  productItem: {
+  emptyText: {
+    fontSize: 18,
+    color: '#8B0000',
+    marginTop: 20,
+  },
+  item: {
+    backgroundColor: '#fff',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginVertical: 4,
-    backgroundColor: '#fff',
-  },
-  selectedItem: {
-    backgroundColor: '#f0f8ff',
-    borderColor: '#8B0000',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   itemText: {
-    fontSize: 15,
-    color: '#333',
+    fontSize: 18,
+    color: '#8B0000',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
-    backgroundColor: '#fff',
+  removeButton: {
+    backgroundColor: '#8B0000',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
   },
-  messageInput: {
-    height: 80,
-    textAlignVertical: 'top',
+  removeButtonText: {
+    color: '#fff',
+    fontSize: 14,
   },
 });
 
-export default Cart;
+export default Wishlist;
